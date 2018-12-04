@@ -59,13 +59,13 @@ otimizador = Adam(lr = 0.0001, decay = 0.00000)
     
 model.compile(loss = 'categorical_crossentropy', optimizer = otimizador, metrics = ['accuracy'])
     
-model.fit(x_train, y_train, batch_size = 64, epochs = 10, validation_split=0.05)
+model.fit(x_train, y_train, batch_size = 64, epochs = 2, validation_split=0.05)
 
 saveModelAndWeights(model, modelName)
 
-#avaliacao = model.evaluate(x_train, y_train)
-#matriz = ConfusionMatrix(model, x_train, y_train)
-#print(matriz)
+avaliacao = model.evaluate(x_train, y_train)
+matriz = ConfusionMatrix(model, x_train, y_train)
+print(matriz)
 
 '''
 x_train = None

@@ -106,9 +106,9 @@ class PreProcess:
             arq.close()
             #Transformamos ele então em um array de strings
             linhas = texto.split('\n')
-            if linhas < N:
-                letter_img_amount[letter] = linhas - 1
-                Total_Desired += linhas - 1
+            if len(linhas) < N:
+                letter_img_amount[letter] = len(linhas) - 1
+                Total_Desired += len(linhas) - 1
             else:
                 letter_img_amount[letter] = N
                 Total_Desired += N

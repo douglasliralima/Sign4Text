@@ -8,12 +8,12 @@ completed = subprocess.call(['python3 Train.py'], shell = True)
 
 preprocess = PreProcess()
 total = preprocess.TotalOfImgs()
-Total_Desired = 23000
+Total_Desired = 5000
 print("\n\n\n**********TOTAL OF IMGS FOR TRAINING:", total, "******************\n\n\n")
 
 while(total > Total_Desired):
     print("\n\n\n**********TOTAL OF IMGS FOR TRAINING:", total, "******************\n\n\n")
-    completed = subprocess.call(['python3 Preprocess.py'], shell = True)
+    completed = subprocess.call(['python3 Train.py'], shell = True)
     total = preprocess.TotalOfImgs()
 
 #p = subprocess.call('python3 Train.py')

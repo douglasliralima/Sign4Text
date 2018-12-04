@@ -97,13 +97,24 @@ class PreProcess:
         else:
             path = self.trainingPath
         #Quantidade de dados que serão usados no treinamento, carregado com a quantidade de imgs que vamos usar
-        Total_Desired = N*26
-        if Total_Desired < self.TotalOfImgs():
-            x = np.zeros((Total_Desired, 224, 224, 3), dtype=np.float32)
-        else:
-            x = np.zeros((self.TotalOfImgs(), 224, 224, 3), dtype=np.float32)
+        Total_Desired = 0
+        letter_img_amount = {}
+        for letter in os.listdir(path):
+            letter_txt_path = path + '/' + letter + '/' + letter + '.txt'
+            arq = open(letter_txt_path, 'r')
+            texto = arq.read()
+            arq.close()
+            #Transformamos ele então em um array de strings
+            linhas = texto.split('\n')
+            if linhas < N:
+                letter_img_amount[letter] = linhas - 1
+                Total_Desired += linhas - 1
+            else:
+                letter_img_amount[letter] = N
+                Total_Desired += N
+        x = np.zeros((Total_Desired, 224, 224, 3), dtype=np.float32)
         #Array de arrays, sendo que cada array conta com apenas uma posição que é referente a classificação daquela letra
-        y = np.zeros((N*26,1), dtype=np.float32)
+        y = np.zeros((Total_Desired,1), dtype=np.float32)
         i = 0
         #Vamos deixar para cada letra carregar os arquivos no x numpy
         for letter in tqdm(os.listdir(path)):
@@ -120,7 +131,7 @@ class PreProcess:
             for linha in linhas:
                 linha = linha.split(' ')
                 #Apenas as linhas que após o split não estão dirty
-                if j < N and linha[0] != '':
+                if j < letter_img_amount[letter] and linha[0] != '':
                     #if i == 0:
                     #    print("\nImg:", linha[0], "posicao:", i)
                     #Vamos carregar a imagem referente daquela linha na memória
@@ -187,12 +198,13 @@ class PreProcess:
         model.load_weights("Weights_" + modelName + '.h5')
         return model
 
-'''
+
 #Códigos para teste no spyder
+'''
 preprocess = PreProcess()
-preprocess.makeFileOfImgLetters()
+
 print("Quantidade total de imagens de libras:", preprocess.TotalOfImgs())
-imgs, y = preprocess.loadBatchLibrasImg(100, 12)
+imgs, y = preprocess.preProcessData(800, 12)
 img = np.zeros((1,224,224,3), dtype=np.float32)
 img[0] = preprocess.preProcessIMGPattern(preprocess.path + '/Q/aug_Q2_372.png')
 #Verificação se a imagem tá dentro do big array

@@ -30,20 +30,27 @@ class PreProcess:
                             'S' : 18, 'T' : 19, 'U' : 20, 'V' : 21, 'W' : 22, 'X' : 23,
                             'Y' : 24, 'Z' : 25
                             }
+        self.map_characters = {
+                            0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F',
+                            6: 'G', 7: 'H', 8: 'I', 9: 'J', 10: 'K', 11: 'L',
+                            12: 'M', 13: 'N', 14: 'O', 15: 'P', 16: 'Q', 17: 'R',
+                            18: 'S', 19: 'T', 20: 'U', 21: 'V', 22: 'W', 23: 'X',
+                            24: 'Y', 25: 'Z'
+                            }
         
     '''
      A função abaixo carrega as iamgens e as deixa no padrão da VGG16
      img_path        =      Local onde a imagem para ser carregada se encontra
      '''
     def preProcessIMGtoVGG16(self, img_path):
-        img = image.load_img(img_path, target_size=(224, 224))
+        img = image.load_img(img_path, target_size=(150, 150))
         x = image.img_to_array(img)
         x = np.expand_dims(x, axis=0)
         x = preprocess_input(x)
         return x
     
     def preProcessIMGPattern(self, img_path):
-        img = image.load_img(img_path, target_size=(224, 224))
+        img = image.load_img(img_path, target_size=(150, 150))
         x = image.img_to_array(img)
         x = x/255.0
         return x
@@ -112,7 +119,7 @@ class PreProcess:
             else:
                 letter_img_amount[letter] = N
                 Total_Desired += N
-        x = np.zeros((Total_Desired, 224, 224, 3), dtype=np.float32)
+        x = np.zeros((Total_Desired, 150, 150, 3), dtype=np.float32)
         #Array de arrays, sendo que cada array conta com apenas uma posição que é referente a classificação daquela letra
         y = np.zeros((Total_Desired,1), dtype=np.float32)
         i = 0

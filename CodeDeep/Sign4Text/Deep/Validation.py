@@ -4,6 +4,7 @@ from keras.optimizers import Adam
 from sklearn.metrics import confusion_matrix
 import numpy as np
 
+
 '''
     A função abaixo retorna uma matriz
 '''
@@ -27,7 +28,7 @@ model.compile(loss = 'categorical_crossentropy', optimizer = otimizador, metrics
 model.summary()
 
 preprocess.makeFileOfImgLetters(True)
-x_train, y_train = preprocess.preProcessData(300, True)
+x_train, y_train = preprocess.preProcessData(1000, True)
 avaliacao = model.evaluate(x_train, y_train)
 print(avaliacao)
 matriz = ConfusionMatrix(model, x_train, y_train)
@@ -37,3 +38,4 @@ import matplotlib.pyplot as plt
 plt.imshow(x_train[2])
 plt.show()
 '''
+

@@ -4,7 +4,9 @@ from MyModels import MakeVGG16_pretrained_model, SelfDeepModel, MobileNetModel
 import os
 from keras.optimizers import Adam
 import numpy as np
-from sklearn.metrics import confusion_matrix
+from keras.callbacks import Callback, EarlyStopping, ReduceLROnPlateau, ModelCheckpoint
+from sklearn.metrics import confusion_matrix, classification_report
+
 
 #Para saber se o PC está usando bem a GPU, utilizar o comando:
 '''nvidia-smi dmon'''
@@ -14,6 +16,18 @@ from sklearn.metrics import confusion_matrix
     aug_A1_411.png
     A2_346.png
 '''
+
+class MetricsCheckpoint(Callback):    
+    def __init__(self, savepath):
+        super(MetricsCheckpoint, self).__init__()
+        self.savepath = savepath
+        self.history = {}
+    def on_epoch_end(self, epoch, logs=None):
+        for k, v in logs.items():
+            self.history.setdefault(k, []).append(v)
+            np.save(self.savepath, self.history)
+
+
 def ConfusionMatrix(modelo, atributos_teste, classe_teste):
   
   classe_teste = [np.argmax(t) for t in classe_teste]
@@ -26,7 +40,7 @@ def ConfusionMatrix(modelo, atributos_teste, classe_teste):
   return matriz
 
 def makeModel():
-    model = MobileNetModel((224,224,3), 26, True)
+    model = MakeVGG16_pretrained_model((150,150,3), 26)
     return model
 
 def saveModelAndWeights(model, modelName):
@@ -53,19 +67,31 @@ else:
     model = makeModel()
 model.summary()
 
-x_train, y_train = preprocess.preProcessData(800)
+x_train, y_train = preprocess.preProcessData(1200)
 
 otimizador = Adam(lr = 0.0001, decay = 0.00000)
     
 model.compile(loss = 'categorical_crossentropy', optimizer = otimizador, metrics = ['accuracy'])
-    
-model.fit(x_train, y_train, batch_size = 64, epochs = 2, validation_split=0.05)
 
-saveModelAndWeights(model, modelName)
+#preprocess.makeFileOfImgLetters(True)
+x_test, y_test = preprocess.preProcessData(1200, True)
+    
+model.fit(x_train, y_train, batch_size = 64, epochs = 10, validation_split=0.05)
+
+#model.fit(x_train, y_train, batch_size = 32, epochs = 5, validation_data=(x_test,y_test), callbacks = [MetricsCheckpoint('logs')])
+
+'''
+y_pred = model.predict(x_test)
+
+report = classification_report(np.where(y_test > 0)[1], np.argmax(y_pred, axis=1), target_names=list(preprocess.map_characters.values()))
+
 
 avaliacao = model.evaluate(x_train, y_train)
 matriz = ConfusionMatrix(model, x_train, y_train)
 print(matriz)
+'''
+
+saveModelAndWeights(model, modelName)
 
 '''
 x_train = None

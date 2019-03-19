@@ -32,6 +32,9 @@ def MakeVGG16_pretrained_model(img_shape, num_classes, imagenet = True):
     #Add the fully-connected layers 
     x = model_vgg16_conv.output
     x = Flatten(name='flatten')(x)
+    #x = Dense(2048, activation='relu')(x)
+    #x = Dense(2048, activation='relu')(x)
+    #x = Dense(1024, activation='relu')(x)
     x = Dense(512, activation='relu', name='fc1')(x)
     x = Dense(num_classes, activation='softmax', name='predictions')(x)   
     

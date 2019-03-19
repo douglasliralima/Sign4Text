@@ -525,12 +525,12 @@ def get_data(path1, path2):
     y = np.asarray(y)
     return X,y
 
-train_dir1 = "asl_alphabet_train_augmentation/"
-train_dir2 = "dataset5_augmentation/"
+train_dir1 = "asl_alphabet_train_no_border/"
+train_dir2 = "dataset5/"
 X_train, y_train = get_data(train_dir1, train_dir2)
 
-np.save("ASL_SOBEL_X_RGB32AUG.npy", X_train)
-np.save("ASL_SOBEL_Y_RGB32AUG.npy", y_train)
+np.save("ASL_SOBEL_X_RGB32ORI.npy", X_train)
+np.save("ASL_SOBEL_Y_RGB32ORI.npy", y_train)
 
 '''
 #dataset = read_dataset('dataset', N_CLASSES, len(PERSON_FOLDERS), RESIZED_IMAGE)
